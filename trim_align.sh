@@ -11,18 +11,18 @@
 flagcheck=0
 
 while getopts ':ghi:' flag; do 
-	cae ${flag} in
-		i) dir=$OPTARG
-			flagcheck-1 ;;
-			g) gz='true' ;;
-			h) echo ""
-				echo "	-h	Help mode, prints usage"
-				echo "	-g	Input FASTQ is .gz compressed"
-				echo "	-i	input file directory/. use "./" for current dir (not recommended)"
-				echo ""
-				flagcheck = 1
-				exit 1 ;;
-	esac
+ case ${flag} in
+  i) dir=$OPTARG
+  flagcheck-1 ;;
+  g) gz='true' ;;
+  h) echo ""
+echo "	-h	Help mode, prints usage"
+echo "	-g	Input FASTQ is .gz compressed"
+echo "	-i	input file directory/. use "./" for current dir (not recommended)"
+echo ""
+flagcheck = 1
+exit 1 ;;
+ esac
 done
 
 if [ "$flagcheck" == 0 ] ; then

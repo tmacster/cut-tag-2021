@@ -15,16 +15,17 @@ for i in ${hist1} ${hist2}; do
 	echo "plotting correlation $i"
 	echo ""
 
-	plotCorrelation -in "$i"_bamsummary.npz --corMethod pearson \
+	plotCorrelation -in "$i"_bamsummary.npz --corMethod spearman \
 	 --skipZeros --plotTitle "${i} bam correlation" \
 	 --whatToPlot heatmap --plotFileFormat pdf \
 	 --colorMap RdYlBu --plotNumbers \
-	 -o "$i"_bam_pearson.pdf \
-	 --outFileCorMatrix "$i"_bam_pearson_counts.txt
+	 -o "$i"_bam_spearman.pdf \
+	 --outFileCorMatrix "$i"_bam_spearman_counts.txt
 
 	 plotPCA -in "$i"_bamsummary.npz --transpose \
 	 --plotFileFormat pdf \
-	 -o "$i"_bam_pearson_PCA.pdf \
+	 -o "$i"_bam_PCA.pdf \
 	 --plotTitle "${i} PCA of read counts" 
 
 done
+

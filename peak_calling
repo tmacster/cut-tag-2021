@@ -1,0 +1,47 @@
+#!/bin/bash
+
+##############################################################
+# script to make bw, peak files from bam
+##############################################################
+
+
+hist1="k27"
+hist2="k4"
+hist1_q="0.05"
+hist2_q="0.01"
+norm="RPGC" #define normalization strategy for bw
+
+mkdir -p bigwigs 
+mkdir -p bigwigs_scaled
+mkdir -p macs2
+mkdir -p macs2/logfiles
+
+
+for i in sorted_bam/"$hist1"/*.bam sorted_bam/"$hist2"/*.bam ; do
+	base=$(basename "$i" _sorted.bam)
+
+	echo "1. converting $i bam to bigwig"
+
+	bamCoverage -b "$i" --outFileName bigwigs/"$base".bw --binSize 100 -p max
+
+	echo "2. converting $i, bam to 1x normalized bigwig"
+	echo ""
+
+	bamCoverage -b "$i" --outFileName bigwigs_scaled/"$base"_rpgc.bw \
+	--binSize 100 --normalizeUsing $norm --effectiveGenomeSize 2652783500 \
+	-p max
+
+	echo "3. calling peaks for $hist1 with MACS"
+	echo ""
+
+	macs2 callpeak -t "$i" -q $hist1_q -f BAMPE -keep-dup all \
+	-n "$base" -g mm --outdir macs2 --broad 2> macs2/logfiles/${hist1}_log.txt
+
+	echo "calling peaks for $hist2 with MACS"
+	echo ""
+
+	macs2 callpeak -t "$i" -q $hist2_q -f BAMPE -keep-dup all \
+	-n "$base" -g mm --outdir macs2 2> macs2/logfiles/${hist2}_log.txt
+
+
+done

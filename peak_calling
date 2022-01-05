@@ -21,27 +21,32 @@ for i in sorted_bam/"$hist1"/*.bam sorted_bam/"$hist2"/*.bam ; do
 	base=$(basename "$i" _sorted.bam)
 
 	echo "1. converting $i bam to bigwig"
+	echo ""
 
-	bamCoverage -b "$i" --outFileName bigwigs/"$base".bw --binSize 100 -p max
+	bamCoverage -b "$i" --outFileName bigwigs/"$base".bw -p max
 
 	echo "2. converting $i, bam to 1x normalized bigwig"
 	echo ""
 
 	bamCoverage -b "$i" --outFileName bigwigs_scaled/"$base"_rpgc.bw \
-	--binSize 100 --normalizeUsing $norm --effectiveGenomeSize 2652783500 \
-	-p max
+	--normalizeUsing $norm --effectiveGenomeSize 2652783500 -p max
 
-	echo "3. calling peaks for $hist1 with MACS"
-	echo ""
+	if [[ $base =~ S[0-8] ]]; then # here taking only the k27 samples
 
-	macs2 callpeak -t "$i" -q $hist1_q -f BAMPE -keep-dup all \
-	-n "$base" -g mm --outdir macs2 --broad 2> macs2/logfiles/${hist1}_log.txt
+		echo "3. MACS2 peak calling for K27"
+		echo ""
 
-	echo "calling peaks for $hist2 with MACS"
-	echo ""
+		macs2 callpeak -t "$i" -q $hist1_q -f BAMPE --keep-dup all \
+		-n "$base" -g mm --outdir macs2 \
+		--broad 2> macs2/logfiles/${hist1}_log.txt
+	else 
+		echo "3. MACS2 peak calling for K4"
+		echo ""
 
-	macs2 callpeak -t "$i" -q $hist2_q -f BAMPE -keep-dup all \
-	-n "$base" -g mm --outdir macs2 2> macs2/logfiles/${hist2}_log.txt
 
+		macs2 callpeak -t "$i" -q $hist2_q -f BAMPE --keep-dup all \
+		-n "$base" -g mm --outdir macs2 2> macs2/logfiles/${hist2}_log.txt
+
+	fi
 
 done

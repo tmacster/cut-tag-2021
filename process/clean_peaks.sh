@@ -29,10 +29,10 @@ bedtools subtract -a "$dir"/"$naph2".bed -b "$dir"/"$naph1".bed > "$dir"/k4_naph
 # ----------------
 
 dir="k27_shared_peaks"
-sol1="k27_solvent_neg_merged"
-sol2="k27_solvent_pos_merged"
-naph1="k27_naph_neg_merged"
-naph2="k27_naph_pos_merged"
+sol1="k27_solvent_neg"
+sol2="k27_solvent_pos"
+naph1="k27_naph_neg"
+naph2="k27_naph_pos"
 
 
 # obtain peaks that are totally gained or lost: SOLVENT

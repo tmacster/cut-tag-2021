@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# script to merge paired-end sequencing files from different lanes
+# script to merge paired-end sequencing files (fq) from different lanes
 # designed for samples S1-S8 (H3K27me3) / S9-S16 (H3K4me3)
 
 START1=1

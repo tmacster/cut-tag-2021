@@ -33,8 +33,7 @@ for hist in k4 k27; do
 	bedtools merge -i stdin -d 1000 > "$outdir"/"$hist"_"$tx"_constant.bed
 done
 
-# count number of peaks in each, append to file
+# count number of peaks in each BED
 for peaks in "$outdir"/*.bed; do 
-	echo "$peaks"; wc -l "$peaks"; echo "" >> peak_counts.txt
-
+	wc -l "$peaks" >> "$outdir"/peak_counts.txt
 done

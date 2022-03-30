@@ -28,17 +28,13 @@ for hist in k4 k27; do
 	bedtools intersect -a "$dir"/"$hist"_"$tx"_pos.bed -b "$dir"/"$hist"_"$tx"_neg.bed -v > \
 	"$outdir"/"$hist"_"$tx"_p16pos_gained.bed
 
-# peaks that are shared in p16-, p16+ (& merge peaks within 1kb just in case)
 	bedtools intersect -a "$dir"/"$hist"_"$tx"_neg.bed -b "$dir"/"$hist"_"$tx"_pos.bed | \
-	bedtools merge -i - -d 1000 > "$outdir"/"$hist"_"$tx"_constant.bed
-
+	sort -k1,1 -k2,2n - | \
+	bedtools merge -i stdin -d 1000 > "$outdir"/"$hist"_"$tx"_constant.bed
 done
 
 # count number of peaks in each, append to file
-for peaks in "$outdir"/*.bed ; do
-	
-	echo "$peaks"
-	echo "wc -l $peaks" >> "$outdir"/peak_counts.txt
+for peaks in "$outdir"/*.bed; do 
+	echo "$peaks"; wc -l "$peaks"; echo "" >> peak_counts.txt
 
 done
-

@@ -2,7 +2,7 @@
 
 # script to find changed peaks between conditions
 
-# definne variables: treatment, directories of interest
+# define variables: treatment, directories of interest
 dir="intersected_peaks"
 tx="solvent"
 #tx="naph"
@@ -14,7 +14,7 @@ mkdir -p p16_changed/
 
 # first need to select 3 columns (BED) from IDR output
 for file in k4_solvent_neg k4_solvent_pos k4_naph_neg k4_naph_pos.bed; do
-	awk '{print $1"\t"$2"\t"$3}' peaks/"$file".bed > "$dir/"$file".bed
+	awk '{print $1"\t"$2"\t"$3}' peaks/"$file".bed > "$dir"/"$file".bed
 done
 
 # then will do 3 intersections

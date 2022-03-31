@@ -1,0 +1,39 @@
+#!/bin/bash
+
+mkdir -p bigwig_merge/
+mkdir -p counts/
+
+# combine bw from biological replicates
+echo "combining bigwig files"
+bigwigCompare -b1 bigwigs_scaled/S1_*.bw -b2 bigwigs_scaled/S3_*.bw --operation add --blackListFileName mm10.blacklist.bed -p max --outFileName bigwig_merge/solvent_neg_k27.bw
+
+bigwigCompare -b1 bigwigs_scaled/S2_*.bw -b2 bigwigs_scaled/S4_*.bw --operation add --blackListFileName mm10.blacklist.bed -p max --outFileName bigwig_merge/solvent_pos_k27.bw
+
+bigwigCompare -b1 bigwigs_scaled/S5_*.bw -b2 bigwigs_scaled/S7_*.bw --operation add --blackListFileName mm10.blacklist.bed -p max --outFileName bigwig_merge/naph_neg_k27.bw
+
+bigwigCompare -b1 bigwigs_scaled/S6_*.bw -b2 bigwigs_scaled/S8_*.bw --operation add --blackListFileName mm10.blacklist.bed -p max --outFileName bigwig_merge/naph_pos_k27.bw
+
+bigwigCompare -b1 bigwigs_scaled/S9_*.bw -b2 bigwigs_scaled/S11_*.bw --operation add --blackListFileName mm10.blacklist.bed -p max --outFileName bigwig_merge/solvent_neg_k4.bw
+
+bigwigCompare -b1 bigwigs_scaled/S10_*.bw -b2 bigwigs_scaled/S12_*.bw --operation add --blackListFileName mm10.blacklist.bed -p max --outFileName bigwig_merge/solvent_pos_k4.bw
+
+bigwigCompare -b1 bigwigs_scaled/S13_*.bw -b2 bigwigs_scaled/S15_*.bw --operation add --blackListFileName mm10.blacklist.bed -p max --outFileName bigwig_merge/naph_neg_k4.bw
+
+bigwigCompare -b1 bigwigs_scaled/S14_*.bw -b2 bigwigs_scaled/S16_*.bw --operation add --blackListFileName mm10.blacklist.bed -p max --outFileName bigwig_merge/naph_pos_k4.bw
+
+# find norm counts over a gene set of interest 
+# update this with a BED file containing coordinates of genes of interest
+for i in k4 k27 ; do
+	echo "computeMatrix for $i"
+	echo ""
+	computeMatrix reference-point -S bigwig_merge/*"$i".bw -R genelists/<genes_bed_file>.bed -a 5000 -b 5000 --outFileName heatmaps/<genes_coverage>_"$i".npz \
+	--missingDataAsZero --skipZeros --blackListFileName mm10.blacklist.bed --smartLabels -p max
+
+	echo "plotting heatmap for $i"
+	echo ""
+	plotHeatmap -m heatmaps/up_genes_scaled_"$i".npz -o heatmaps/up_genes_scaled_"$i".pdf --colorList white,black
+done
+
+echo "multiBigwigSummary"
+multiBigwigSummary BED-file -b bigwigs_scaled/*.bw -o counts/mm10_promoter_counts.npz --BED mm10_promoters.bed \
+--outRawCounts counts/mm10_promoter_counts.txt -p max --blackListFileName mm10.blacklist.bed

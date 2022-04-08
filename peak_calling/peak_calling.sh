@@ -76,7 +76,7 @@ for i in sorted_bam2/"$hist"/*.bam; do
 
 	#bamCoverage -b "$i" --outFileName bedgraphs2/"$filename".bedgraph --outFileFormat bedgraph --binSize 10 -p max
 	bedtools bamtobed -bedpe -i "$i" > bed/"$filename".bed
-	awk '$1 != "." && $1==$4 && $6-$2 < 1000 {print $0}' bed/"$filename"_clean.bed
+	awk '$1 != "." && $1==$4 && $6-$2 < 1000 {print $0}' bed/"$filename".bed > bed/"$filename"_clean.bed
 	cut -f 1,2,6 "$filename"_clean.bed | sort -k1,1 -k2,2n -k3,3n > "$filename"_fragments.bed
 
 	bedtools genomecov -bg -i "$filename"_fragments.bed -g ~/refs/mm10/mm10.chrom.sizes > bedgraphs2/"$filename".bedgraph
